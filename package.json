@@ -1,0 +1,19 @@
+{
+  "name": "nevermark-server",
+  "version": "1.0.0",
+  "description": "Nevermark is an app designed to help you better track and interact with your browser history.",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/CiprianaM/Nevermark-server.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/CiprianaM/Nevermark-server/issues"
+  },
+  "homepage": "https://github.com/CiprianaM/Nevermark-server#readme"
+}

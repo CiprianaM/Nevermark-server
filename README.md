@@ -34,6 +34,12 @@ In the root project folder *Nevermark-client*:
 ```bash
 node index.js
 ```
+## Connecting to MongoDB
+Access https://cloud.mongodb.com/ and use the project gmail credentials to log into the interface
+Create your own user from "Database Access" option
+Connection provided on "Clusters" > "Connect" (you will need to have mongo shell installed)
+
+
 ## Tech Stack
 * React
 * Redis

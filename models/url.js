@@ -9,7 +9,7 @@ const urlSchema = new Schema({
   terms: { type: Array, required: true },
   titleTerms: { type: Array, required: true },
   domain: { type: Array, required: true },
-  hostname: { type: Array, required: true },
+  hostname: { type: String, required: true },
   screenshot: { type: String, required: false },
   userId: { type: String, required: true },
   createdAt: { type: String, required: true },

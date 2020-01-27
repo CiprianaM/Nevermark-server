@@ -16,6 +16,7 @@ git rm --cached <nameOfFile> >>> will delete the specified file from the reposit
 
 ## Installation
 
+Before installation, make sure you have java installed, and JAVA_HOME configured. Please follow the instructions here https://www.digitalocean.com/community/tutorials/how-to-install-java-with-apt-on-ubuntu-18-04 . The package you should install is openjdk-11-jdk.
 
 To run the app please follow these instructions:
 

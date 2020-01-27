@@ -16,11 +16,4 @@ client.ping({
   }
 });
 
-// client.search({
-//   q: 'pants'o
-// }).then(function (body) {
-//   var hits = body.hits.hits;
-// }, function (error) {
-//   console.trace(error.message);
-// });
 

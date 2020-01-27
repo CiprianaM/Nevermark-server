@@ -15,7 +15,7 @@ exports.createNewUrl = async (req, res) => {
     const url = await myUrlModel.create({
       url: req.body.url,
       fullUrl: req.body.fullUrl,
-      fullTitle: req.body.fullTitle,
+      text: req.body.text,
       text: req.body.text,
       terms: req.body.terms,
       titleTerms: req.body.titleTerms,

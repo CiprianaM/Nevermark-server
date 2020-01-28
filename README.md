@@ -32,6 +32,13 @@ npm install
 ```
 ## Get it started
 In the root project folder *Nevermark-client*:
+
+1. Create a .env.dev file with this content (or the config or your likings) :
+```
+APP_PORT=3048
+```
+
+2. Run 
 ```bash
 node index.js
 ```

@@ -20,17 +20,20 @@ exports.insertUserVisit = async (req,res) => {
       throw Error('Missing request body');
     }
 
+    console.log('received post request',req.body);
+
     const checkRules = [
       {prop : 'pageTitle',type : 'string',required : true},
       {prop : 'pageText',type : 'string',required : true},
       {prop : 'userId',type : 'integer',required : true},
       {prop : 'fullUrl',type : 'string',required : true},
-      {prop : 'visitTimeSpent',type : 'string',required : true},
-      {prop : 'visitStartTime',type : 'string',required : true}
+      {prop : 'visitTimeSpent',type : 'integer',required : true},
+      {prop : 'visitStartTime',type : 'integer',required : true}
     ];
 
     const validated = checkObjProps(req.body,checkRules);
     if (validated.error) {
+      console.log('validation error :' + validated.error);
       res.status(400).send(JSON.stringify(validated,null,2));
       return;
     }

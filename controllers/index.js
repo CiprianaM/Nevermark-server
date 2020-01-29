@@ -1,4 +1,5 @@
 const theDb = require('../models');
+const mongoose = require('mongoose');
 const checkObjProps = require('../utils/checkObjProps');
 const rmUrlCampaignParams = require('../utils/rmUrlCampaignParams');
 
@@ -58,7 +59,8 @@ exports.insertUserVisit = async (req,res) => {
     .split('?')[0];
 
   // req posting
-
+  const session = await mongoose.startSession();
+  session.startTransaction();
   try {
     let domainId,urlFromDb,urlId;
     // Does the domain from this url exists ?
@@ -68,7 +70,7 @@ exports.insertUserVisit = async (req,res) => {
     let domainfromDb = await theDb.domain.findOne({domain});
     if (!domainfromDb) {
       console.log('No domain existing');
-      domainfromDb = await new theDb.domain({domain}).save();
+      domainfromDb = await new theDb.domain({domain}).save({ session });
 
     }
     domainId = domainfromDb._id;
@@ -86,7 +88,7 @@ exports.insertUserVisit = async (req,res) => {
     if (!urlFromDb) {
       console.log('No url existing. inserting it');
       const urlToInsert = await new theDb.url({url,fullUrl,domainId,protocol});
-      urlFromDb = await urlToInsert.save();
+      urlFromDb = await urlToInsert.save({ session });
     }
 
     urlId = urlFromDb._id;
@@ -94,7 +96,7 @@ exports.insertUserVisit = async (req,res) => {
 
     // Insert into log
     const logToInsert = await new theDb.log({userId,domainId,urlId,visitStartTime,visitTimeSpent});
-    const logFromDb = await logToInsert.save();
+    const logFromDb = await logToInsert.save({ session });
     if (!logFromDb) {
       throw new Error('Impossible to insert log in db');
     }
@@ -109,7 +111,10 @@ exports.insertUserVisit = async (req,res) => {
         pageText
       },
       {new : true,
-        upsert : true}
+        upsert : true,
+        useFindAndModify : false, // deprecation warning otherwise
+        session
+      }
     );
 
     if (!url2User) {
@@ -118,12 +123,15 @@ exports.insertUserVisit = async (req,res) => {
     console.log('Mission is a success');
     res.status(201).send(url2User);
     // TODO : ElasticSearch Index From here
-
+    await session.commitTransaction();
   } catch (error) {
     // Our bad ...
-    console.log(error);
-    res.status(500).send(error.message);
+    console.log('Transaction aborted ' + error);
+    await session.abortTransaction();
+    res.status(500).send({error : error.message});
 
+  } finally {
+    session.endSession();
   }
 };
 

@@ -1,4 +1,3 @@
-require('../db');
 const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
 
@@ -8,6 +7,6 @@ const url2User = new Schema({
   domainId : {type : mongoose.Schema.Types.ObjectId,ref : 'Domain',required : true},
   pageTitle : { type : String,required : true },
   pageText : { type : String,required : true },
-});
+},{ autoCreate : true});
 
 module.exports = mongoose.model('Url2User',url2User);

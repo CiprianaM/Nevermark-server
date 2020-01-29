@@ -1,11 +1,13 @@
-const mongoose = require('../db');
+require('../db');
+const mongoose = require('mongoose');
+
 // const Schema = mongoose.Schema;
 
 const logSchema = new mongoose.Schema({
-  userId : { type : mongoose.Schema.Types.ObjectId,required : true },
-  urlId : {type : mongoose.Schema.Types.ObjectId,required : true},
+  userId : { type : String,required : true }, // Todo cast to : mongoose.Schema.Types.ObjectId
+  urlId : {type : mongoose.Schema.Types.ObjectId,ref : 'Url',required : true},
   domainId : {type : mongoose.Schema.Types.ObjectId,required : true},
-  visitTime : { type : String,required : true },
-  timeSpent : { type : String,required : true },
+  visitStartTime : { type : String,required : true },
+  visitTimeSpent : { type : String,required : true },
 });
 module.exports = mongoose.model('Log',logSchema);

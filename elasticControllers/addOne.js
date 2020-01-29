@@ -1,24 +1,16 @@
 const esClient = require('../elasticDb');
-
-const incomingPost = {
-  "fullTitle": "Elasticsearch queries",
-  "text": "This is how you make an elasticsearch query. It is not easy, but we will manage.",
-  "userId": "45",
-  "fullUrl": "http://www.stackoverflow.com",
-  "timeSpent": "8888",
-  "startTime": "12 march"
-}
-
 const addOne = async (req, res) => {
   const toInsert = {
-    fullTitle: req.body.fullTitle,
-    text: req.body.text,
+    pageTitle: req.body.pageTitle,
+    pageText: req.body.pageText,
     userId: req.body.userId,
     url: req.body.fullUrl.split('://')[1],
     log: [{
-      startTime: req.body.startTime,
+      visitStartTime: req.body.visitStartTime,
       timeSpent: req.body.timeSpent
-    }]
+    }],
+    visitTimeSpent: req.body.visitTimeSpent,
+    protocol: req.body.fullUrl.split('://')[0]
   }
   try {
     const result = await esClient.search({
@@ -27,21 +19,30 @@ const addOne = async (req, res) => {
         query: {
           bool: {
             must: [
-              {match: {url : toInsert.url}},
-              {match: {userId : toInsert.userId}},
+              { term: { 'userId.keyword': { value: toInsert.userId } } },
+              { term: { 'url.keyword': { value: toInsert.url } } }
             ]
           }
         }
       }
     })
-    const returnedResult = result.hits.hits[0];
-    const numberOfRecords = result.hits.total.value;
+    const returnedResult = result.body.hits.hits[0];
+    const numberOfRecords = result.body.hits.total.value;
     if (!numberOfRecords) {
       const inserted = await esClient.index({
         index: 'history',
-        body: toInsert
+        body: {
+          pageTitle: toInsert.pageTitle,
+          pageText: toInsert.pageText,
+          userId: toInsert.userId,
+          url: toInsert.url,
+          log: toInsert.log,
+          totalVisits: 1,
+          totalTimeSpent: Number(req.body.visitTimeSpent),
+          protocol: toInsert.protocol
+        }
       })
-      if(inserted.result!=='created') {
+      if(inserted.body.result!=='created') {
         throw new Error('Incorrect insertion');
       }
       console.log('successfully inserted')
@@ -53,11 +54,12 @@ const addOne = async (req, res) => {
       returnedResult._source.log = [...returnedResult._source.log, ...toInsert.log]
       await esClient.update({
         index: 'history',
-        type: 'pageDataToUser',
         id: returnedResult._id,
         body: {
           doc: {
-            log: returnedResult._source.log
+            log: returnedResult._source.log,
+            totalVisits: returnedResult._source.totalVisits+1,
+            totalTimeSpent: Number(returnedResult._source.totalTimeSpent)+Number(toInsert.log[0].timeSpent)
           }
         },
       })
@@ -73,8 +75,4 @@ const addOne = async (req, res) => {
     res.end();
   }
 }
-
-// addOne(incomingRecord);
 module.exports = addOne;
-
-

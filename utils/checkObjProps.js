@@ -1,7 +1,7 @@
 const checkObjProps = (obj,checkRules)=> {
   const error = [];
   for (rule of checkRules) {
-    if (!obj[rule.prop]) {
+    if (obj[rule.prop] !== 0 && !obj[rule.prop]) {
       if (rule.required) {
         error.push(`missing required field [${rule.prop}]`);
       }

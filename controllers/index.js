@@ -92,8 +92,6 @@ exports.insertUserVisit = async (req,res) => {
     urlId = urlFromDb._id;
     if (!urlId) throw new Error(`Failed to save url ${url}`);
 
-    const userId = '1';
-
     // Insert into log
     const logToInsert = await new theDb.log({userId,domainId,urlId,visitStartTime,visitTimeSpent});
     const logFromDb = await logToInsert.save();

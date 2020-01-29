@@ -1,15 +1,15 @@
 const esClient = require('../elasticDb');
 const addOne = async (req, res) => {
   const toInsert = {
-    fullTitle: req.body.fullTitle,
-    text: req.body.text,
+    pageTitle: req.body.pageTitle,
+    pageText: req.body.pageText,
     userId: req.body.userId,
     url: req.body.fullUrl.split('://')[1],
     log: [{
-      startTime: req.body.startTime,
+      visitStartTime: req.body.visitStartTime,
       timeSpent: req.body.timeSpent
     }],
-    visitTime: req.body.visitTime,
+    visitTimeSpent: req.body.visitTimeSpent,
     protocol: req.body.fullUrl.split('://')[0]
   }
   try {
@@ -19,8 +19,8 @@ const addOne = async (req, res) => {
         query: {
           bool: {
             must: [
-              {match: {url : toInsert.url}},
-              {match: {userId : toInsert.userId}},
+              { term: { 'userId.keyword': { value: toInsert.userId } } },
+              { term: { 'url.keyword': { value: toInsert.url } } }
             ]
           }
         }
@@ -32,13 +32,13 @@ const addOne = async (req, res) => {
       const inserted = await esClient.index({
         index: 'history',
         body: {
-          fullTitle: toInsert.fullTitle,
-          text: toInsert.text,
+          pageTitle: toInsert.pageTitle,
+          pageText: toInsert.pageText,
           userId: toInsert.userId,
           url: toInsert.url,
           log: toInsert.log,
           totalVisits: 1,
-          totalTimeSpent: Number(req.body.timeSpent),
+          totalTimeSpent: Number(req.body.visitTimeSpent),
           protocol: toInsert.protocol
         }
       })

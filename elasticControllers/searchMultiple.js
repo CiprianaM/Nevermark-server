@@ -30,10 +30,10 @@ const retrieveMultiple = async (req,res) => {
 
       }
     });
-    const totalPages = Math.ceil(result.body.hits.total / 20);
-    console.log(totalPages);
+
+    const totalPages = Math.ceil(result.body.hits.total.value / 20);
     const response = {
-      hits : result.body.hits.hits.length,
+      hits : result.body.hits.total.value,
       totalPageNum : totalPages,
       results : []
     };
@@ -44,14 +44,11 @@ const retrieveMultiple = async (req,res) => {
     });
     res.set({
       'Access-Control-Allow-Origin' : '*'
-    });
-    res.status(201);
+    })
+      .status(201)
+      .json(response)
+      .end();
 
-    res.json(response);
-    res.end();
-    res.status(200);
-    res.json(result.body.hits.hits);
-    res.end();
     console.log(`you've got ${result.body.hits.hits.length} matches`);
   } catch (error) {
     console.log(error);

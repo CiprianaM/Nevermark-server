@@ -4,25 +4,30 @@ const client = require('../elasticDb');
 // ------------------ expected req object start ---------------------------//
 const receivedReq = {
   body: {
+    searchedText: 'stackoverflow mongoose',
     pageNum: 1
   }
 }
 // ------------------ expected req object stop ---------------------------//
 
-const retrieveAll = async (req, res) => {
+const retrieveMultiple = async (req, res) => {
   let pageNum = 0;
   if(req.body.pageNum !== undefined) pageNum = req.body.pageNum - 1;
   const pageSize = 20;
-  const searchedText = req.body.pageText;
+  const searchedText = req.body.searchedText;
   try {
     const result = await client.search({
       index: 'history',
       body: {
         size: pageSize,
         from: pageNum*pageSize,
-        query: {
-          match_all: {}
-        }
+          query: {
+            multi_match : {
+              query : searchedText,
+              fields : [ "pageTitle^3", "pageText", 'url' ]
+            }
+          }
+
       }
     })
     const totalPages = Math.ceil(result.body.hits.total.value/20);
@@ -40,9 +45,12 @@ const retrieveAll = async (req, res) => {
     res.status(201);
     res.json(response);
     res.end();
-    console.log(`you've got ${result.body.hits.hits.length} matches`)
+    res.status(201);
+      res.json(result.body.hits.hits);
+      res.end();
+      console.log(`you've got ${result.body.hits.hits.length} matches`)
   } catch (error) {
+    console.log(error);
   }
 }
-
-module.exports = retrieveAll;
+module.exports = retrieveMultiple;

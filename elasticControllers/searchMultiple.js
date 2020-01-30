@@ -1,20 +1,11 @@
 'use strict';
 const client = require('../elasticDb');
 
-// ------------------ expected req object start ---------------------------//
-const receivedReq = {
-  body : {
-    searchedText : 'stackoverflow mongoose',
-    pageNum : 1
-  }
-};
-// ------------------ expected req object stop ---------------------------//
-
 const retrieveMultiple = async (req,res) => {
   let pageNum = 0;
   if (req.body.pageNum !== undefined) pageNum = req.body.pageNum - 1;
   const pageSize = 20;
-  const searchedText = req.body.searchedText;
+
   try {
     const result = await client.search({
       index : 'history',

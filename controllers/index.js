@@ -2,6 +2,7 @@ const theDb = require('../models');
 const mongoose = require('mongoose');
 const checkObjProps = require('../utils/checkObjProps');
 const rmUrlCampaignParams = require('../utils/rmUrlCampaignParams');
+const indexToElasticSearch = require('../elasticControllers/addOne');
 
 exports.insertUserVisit = async (req,res) => {
 
@@ -20,8 +21,6 @@ exports.insertUserVisit = async (req,res) => {
     if (!req.body) {
       throw Error('Missing request body');
     }
-
-    console.log('received post request',req.body);
 
     const checkRules = [
       {prop : 'pageTitle',type : 'string',required : true},
@@ -120,8 +119,25 @@ exports.insertUserVisit = async (req,res) => {
     if (!url2User) {
       throw new Error('Impossible to upsert url2user in db');
     }
+
+    const toIndex = {
+      pageTitle,
+      pageText,
+      userId,
+      url,
+      fullUrl,
+      log : [{
+        visitStartTime,
+        visitTimeSpent
+      }],
+      visitTimeSpent,
+      protocol
+    };
+
+    const indexed = await indexToElasticSearch(toIndex);
     console.log('Mission is a success');
-    res.status(201).send(url2User);
+
+    res.status(201).send(indexed);
     // TODO : ElasticSearch Index From here
     await session.commitTransaction();
   } catch (error) {

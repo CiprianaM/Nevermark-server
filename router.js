@@ -1,15 +1,8 @@
 const router = require ('express').Router();
-// const {getAllUrls, createNewUrl, deleteUrl} = require ('./controllers/url');
-
-//ElasticSearch controllers
-const addNewRecord = require('./elasticControllers/addOne');
-const filterSearchReq = require('./elasticControllers/search')
-
-//Mongoose controllers
 const actions = require('./controllers');
+const getAll = require('./elasticControllers/search');
 
-router.get('', filterSearchReq);
-router.post('', addNewRecord);
-// router.delete('/urls/:id', deleteUrl);
+router.get('',getAll);
+router.post('',actions.insertUserVisit);
 
 module.exports = router;

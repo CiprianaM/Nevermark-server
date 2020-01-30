@@ -23,7 +23,7 @@ const retrieveMultiple = async (req,res) => {
         from : pageNum * pageSize,
         query : {
           multi_match : {
-            query : searchedText,
+            query : req.params.search,
             fields : [ 'pageTitle^3','pageText','url' ]
           }
         }
@@ -42,10 +42,14 @@ const retrieveMultiple = async (req,res) => {
       delete newSource.userId;
       response.results.push(newSource);
     });
+    res.set({
+      'Access-Control-Allow-Origin' : '*'
+    });
     res.status(201);
+
     res.json(response);
     res.end();
-    res.status(201);
+    res.status(200);
     res.json(result.body.hits.hits);
     res.end();
     console.log(`you've got ${result.body.hits.hits.length} matches`);

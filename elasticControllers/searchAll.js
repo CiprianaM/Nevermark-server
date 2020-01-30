@@ -10,10 +10,10 @@ const receivedReq = {
 // ------------------ expected req object stop ---------------------------//
 
 const retrieveAll = async (req,res) => {
+  console.log('searchAll request received');
   let pageNum = 0;
   if (req.body.pageNum !== undefined) pageNum = req.body.pageNum - 1;
   const pageSize = 20;
-  const searchedText = req.body.pageText;
   try {
     const result = await client.search({
       index : 'history',
@@ -29,20 +29,28 @@ const retrieveAll = async (req,res) => {
     const totalPages = Math.ceil(result.body.hits.total / 20);
 
     const response = {
-      hits : result.body.hits.total,
-      totalPageNum : totalPages,
+      // hits : result.body.hits.total,
+      // totalPageNum : totalPages,
       results : []
     };
-    result.body.hits.hits.forEach((hit,index) => {
+    result.body.hits.hits.forEach((hit) => {
       const newSource = Object.assign({},hit._source);
       delete newSource.userId;
+      delete newSource.pageText;
+      delete newSource.hits;
+      // delete newSource.totalPageNum;
       response.results.push(newSource);
     });
-    res.status(201);
-    res.json(response);
-    res.end();
+    res.set({
+      'Access-Control-Allow-Origin' : '*'
+    })
+      .status(200)
+      .json(response);
+
     console.log(`you've got ${result.body.hits.total} matches`);
   } catch (error) {
+    console.log('error : ',error);
+    throw new Error(error);
   }
 };
 

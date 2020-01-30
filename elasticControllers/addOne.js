@@ -1,17 +1,8 @@
 const esClient = require('../elasticDb');
+const transform = require('./utils/reqTransform');
+
 const addOne = async (req, res) => {
-  const toInsert = {
-    pageTitle: req.body.pageTitle,
-    pageText: req.body.pageText,
-    userId: req.body.userId,
-    url: req.body.fullUrl.split('://')[1],
-    log: [{
-      visitStartTime: req.body.visitStartTime,
-      timeSpent: req.body.timeSpent
-    }],
-    visitTimeSpent: req.body.visitTimeSpent,
-    protocol: req.body.fullUrl.split('://')[0]
-  }
+  const toInsert=transform(req);
   try {
     const result = await esClient.search({
       index: 'history',
@@ -26,6 +17,7 @@ const addOne = async (req, res) => {
         }
       }
     })
+
     const returnedResult = result.body.hits.hits[0];
     const numberOfRecords = result.body.hits.total.value;
     if (!numberOfRecords) {

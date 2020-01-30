@@ -30,6 +30,10 @@ const retrieveMultiple = async (req,res) => {
     };
     result.body.hits.hits.forEach((hit,index) => {
       const newSource = Object.assign({},hit._source);
+      newSource.shortUrl = newSource.url.length < 40 ? newSource.url : newSource.url.substr(0,40) + '...';
+      newSource.domain = newSource.url
+        .split('/')[0]
+        .split('?')[0];
       delete newSource.userId;
       response.results.push(newSource);
     });

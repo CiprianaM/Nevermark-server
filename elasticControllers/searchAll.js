@@ -38,6 +38,11 @@ const retrieveAll = async (req,res) => {
       delete newSource.userId;
       delete newSource.pageText;
       delete newSource.hits;
+      newSource.shortUrl = newSource.url.length < 40 ? newSource.url : newSource.url.substr(0,40) + '...';
+      newSource.domain = newSource.url
+        .split('/')[0]
+        .split('?')[0];
+      delete newSource.userId;
       // delete newSource.totalPageNum;
       response.results.push(newSource);
     });

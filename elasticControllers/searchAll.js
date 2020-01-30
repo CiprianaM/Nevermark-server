@@ -27,9 +27,9 @@ const retrieveAll = async (req,res) => {
     });
 
     const totalPages = Math.ceil(result.body.hits.total / 20);
-    console.log(totalPages);
+
     const response = {
-      hits : result.body.hits.hits.length,
+      hits : result.body.hits.total,
       totalPageNum : totalPages,
       results : []
     };
@@ -41,7 +41,7 @@ const retrieveAll = async (req,res) => {
     res.status(201);
     res.json(response);
     res.end();
-    console.log(`you've got ${result.body.hits.hits.length} matches`);
+    console.log(`you've got ${result.body.hits.total} matches`);
   } catch (error) {
   }
 };

@@ -16,10 +16,12 @@ const addOne = async (toInsert) => {
         }
       }
     });
-
-    const returnedResult = result.body.hits.hits[0];
     const numberOfRecords = result.body.hits.total.value;
+    // console.log(result.body.hits);
+    console.log(toInsert);
+
     if (!numberOfRecords) {
+
       const inserted = await esClient.index({
         index : 'history',
         body : {
@@ -40,11 +42,20 @@ const addOne = async (toInsert) => {
       return toInsert;
 
     } else {
+      console.log('toInsert.log :' + JSON.stringify(toInsert.log));
+      const returnedResult = result.body.hits.hits[0];
+      console.log('result : ',returnedResult);
+
+      console.log('numberOfRecords ',numberOfRecords);
+      console.log('id = ',result.body.hits.hits[0]._id);
       returnedResult._source.log = [...returnedResult._source.log,...toInsert.log];
-      await esClient.update({
+      console.log(returnedResult._source.log);
+
+      const updated = await esClient.update({
         index : 'history',
-        id : returnedResult._id,
+        id : result.body.hits.hits[0]._id,
         body : {
+
           doc : {
             log : returnedResult._source.log,
             totalVisits : returnedResult._source.totalVisits + 1,
@@ -52,11 +63,14 @@ const addOne = async (toInsert) => {
           }
         },
       });
+
+      console.log('updated :',updated);
       console.log('successfully modified');
       return toInsert;
     }
 
   } catch (error) {
+    console.log('Error catched in addOne');
     throw new Error(error);
   }
 };

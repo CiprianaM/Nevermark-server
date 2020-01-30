@@ -22,8 +22,6 @@ exports.insertUserVisit = async (req,res) => {
       throw Error('Missing request body');
     }
 
-    console.log('received post request',req.body);
-
     const checkRules = [
       {prop : 'pageTitle',type : 'string',required : true},
       {prop : 'pageText',type : 'string',required : true},
@@ -121,15 +119,13 @@ exports.insertUserVisit = async (req,res) => {
     if (!url2User) {
       throw new Error('Impossible to upsert url2user in db');
     }
-    console.log('Mission is a success');
-    console.log('inserted :');
-    console.log(url2User);
 
     const toIndex = {
       pageTitle,
       pageText,
       userId,
       url,
+      fullUrl,
       log : [{
         visitStartTime,
         visitTimeSpent
@@ -139,6 +135,8 @@ exports.insertUserVisit = async (req,res) => {
     };
 
     const indexed = await indexToElasticSearch(toIndex);
+    console.log('Mission is a success');
+
     res.status(201).send(indexed);
     // TODO : ElasticSearch Index From here
     await session.commitTransaction();

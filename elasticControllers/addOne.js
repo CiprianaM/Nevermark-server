@@ -59,7 +59,7 @@ const addOne = async (toInsert) => {
           doc : {
             log : returnedResult._source.log,
             totalVisits : returnedResult._source.totalVisits + 1,
-            totalTimeSpent : Number(returnedResult._source.totalTimeSpent) + Number(toInsert.log[0].timeSpent)
+            totalTimeSpent : Number(returnedResult._source.totalTimeSpent) + Number(toInsert.log[0].visitTimeSpent)
           }
         },
       });

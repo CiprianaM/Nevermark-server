@@ -2,6 +2,7 @@ const theDb = require('../models');
 const mongoose = require('mongoose');
 const checkObjProps = require('../utils/checkObjProps');
 const rmUrlCampaignParams = require('../utils/rmUrlCampaignParams');
+const indexToElasticSearch = require('../elasticControllers/addOne');
 
 exports.insertUserVisit = async (req,res) => {
 
@@ -121,7 +122,24 @@ exports.insertUserVisit = async (req,res) => {
       throw new Error('Impossible to upsert url2user in db');
     }
     console.log('Mission is a success');
-    res.status(201).send(url2User);
+    console.log('inserted :');
+    console.log(url2User);
+
+    const toIndex = {
+      pageTitle,
+      pageText,
+      userId,
+      url,
+      log : [{
+        visitStartTime,
+        visitTimeSpent
+      }],
+      visitTimeSpent,
+      protocol
+    };
+
+    const indexed = await indexToElasticSearch(toIndex);
+    res.status(201).send(indexed);
     // TODO : ElasticSearch Index From here
     await session.commitTransaction();
   } catch (error) {

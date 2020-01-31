@@ -3,11 +3,12 @@ const textExtract = require('./textExtract');
 
 const elasticResToFront = (req,res) => {
   const searchResults = res.searchResults;
-  const totalPages = Math.ceil(searchResults.body.hits.total / 20);
+  const nbHits = searchResults.body.hits.total.value;
+  const nbPages = Math.ceil(searchResults.body.hits.total / 20);
 
   const response = {
-    // hits : result.body.hits.total,
-    totalPageNum : totalPages,
+    nbPages,
+    nbHits,
     results : []
   };
   searchResults.body.hits.hits.forEach((hit) => {
@@ -30,7 +31,7 @@ const elasticResToFront = (req,res) => {
     .status(200)
     .json(response);
 
-  console.log(`you've got ${result.body.hits.total} matches`);
+  console.log(`you've got ${searchResults.body.hits.total.value} matches`);
 };
 
 module.exports = elasticResToFront;

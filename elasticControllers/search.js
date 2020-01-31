@@ -2,11 +2,11 @@
 const searchAll = require('./searchAll');
 const textSearch = require('./searchMultiple');
 
-const filterSearchReq = async (req, res) => {
-  if (req.body.searchedText===undefined) {
-    searchAll(req, res);
+const filterSearchReq = async (req,res) => {
+  if (req.params.search) {
+    textSearch(req,res);
   } else {
-    textSearch(req, res);
+    searchAll(req,res);
   }
-}
+};
 module.exports = filterSearchReq;

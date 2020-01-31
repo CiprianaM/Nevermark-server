@@ -5,6 +5,7 @@ const sorted = require('./elasticControllers/sort');
 const filtered = require('./elasticControllers/dateFilter');
 
 router.get('',getAll);
+router.get('/:search',getAll);
 router.post('',actions.insertUserVisit);
 router.get('/sorted/:order', filtered);
 // router.get('/filter', filtered);

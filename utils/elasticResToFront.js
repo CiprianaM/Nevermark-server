@@ -17,7 +17,8 @@ const elasticResToFront = (req,res) => {
     delete newSource.hits;
     newSource.shortUrl = newSource.url.length < 40 ? newSource.url : newSource.url.substr(0,40) + '...';
     newSource.lastVisitTime = moment(newSource.log[newSource.log.length - 1].visitStartTime).fromNow();
-    newSource.pageText = textExtract(newSource.pageText,'',100,'strong');
+    newSource.pageText = textExtract(newSource.pageText,req.params.search,100,'strong');
+    newSource.pageTitle = textExtract(newSource.pageTitle,req.params.search,100,'strong');
     newSource.domain = newSource.url
       .split('/')[0]
       .split('?')[0];

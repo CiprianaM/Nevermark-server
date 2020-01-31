@@ -1,6 +1,5 @@
 const textExtract = (str,keywordsStr,maxlen = 100,tag) =>{
   if (!str) return '';
-  console.log(str);
 
   if (!str) return '';
   if (!keywordsStr || !keywordsStr.length) {

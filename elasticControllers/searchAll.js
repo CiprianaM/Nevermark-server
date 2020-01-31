@@ -1,48 +1,32 @@
 'use strict';
 const client = require('../elasticDb');
-
-// ------------------ expected req object start ---------------------------//
-const receivedReq = {
-  body : {
-    pageNum : 1
-  }
-};
-// ------------------ expected req object stop ---------------------------//
+const elasticResToFront = require('../utils/elasticResToFront');
+require('dotenv').config({ path : '../.env.dev' });
 
 const retrieveAll = async (req,res) => {
+  console.log('searchAll request received');
   let pageNum = 0;
   if (req.body.pageNum !== undefined) pageNum = req.body.pageNum - 1;
-  const pageSize = 20;
-  const searchedText = req.body.pageText;
+  const {NBRES_PER_FETCH} = process.env || 20;
   try {
-    const result = await client.search({
+    res.searchResults = await client.search({
       index : 'history',
       body : {
-        size : pageSize,
-        from : pageNum * pageSize,
+        size : NBRES_PER_FETCH,
+        from : pageNum * NBRES_PER_FETCH,
         query : {
           match_all : {}
+        },
+        sort : {
+          'log.visitStartTime' : {order : 'desc'}
         }
       }
     });
+    return elasticResToFront(req,res);
 
-    const totalPages = Math.ceil(result.body.hits.total / 20);
-
-    const response = {
-      hits : result.body.hits.total,
-      totalPageNum : totalPages,
-      results : []
-    };
-    result.body.hits.hits.forEach((hit,index) => {
-      const newSource = Object.assign({},hit._source);
-      delete newSource.userId;
-      response.results.push(newSource);
-    });
-    res.status(201);
-    res.json(response);
-    res.end();
-    console.log(`you've got ${result.body.hits.total} matches`);
   } catch (error) {
+    console.log('error : ',error);
+    throw new Error(error);
   }
 };
 

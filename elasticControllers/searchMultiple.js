@@ -1,54 +1,36 @@
 'use strict';
 const client = require('../elasticDb');
-
-// ------------------ expected req object start ---------------------------//
-const receivedReq = {
-  body : {
-    searchedText : 'stackoverflow mongoose',
-    pageNum : 1
-  }
-};
-// ------------------ expected req object stop ---------------------------//
+const elasticResToFront = require('../utils/elasticResToFront');
+require('dotenv').config({ path : '../.env.dev' });
 
 const retrieveMultiple = async (req,res) => {
   let pageNum = 0;
   if (req.body.pageNum !== undefined) pageNum = req.body.pageNum - 1;
-  const pageSize = 20;
-  const searchedText = req.body.searchedText;
+  const {NBRES_PER_FETCH} = process.env || 20;
+  console.log(NBRES_PER_FETCH);
   try {
-    const result = await client.search({
+    res.searchResults = await client.search({
       index : 'history',
+      track_scores : true,
+
       body : {
-        size : pageSize,
-        from : pageNum * pageSize,
+        size : NBRES_PER_FETCH,
+        from : pageNum * NBRES_PER_FETCH,
         query : {
           multi_match : {
-            query : searchedText,
+            query : req.params.search,
             fields : [ 'pageTitle^3','pageText','url' ]
           }
+        },
+        sort : {
+          'log.visitStartTime' : {order : 'desc'},
+          _score : {order : 'desc'}
         }
 
       }
     });
-    const totalPages = Math.ceil(result.body.hits.total / 20);
-    console.log(totalPages);
-    const response = {
-      hits : result.body.hits.hits.length,
-      totalPageNum : totalPages,
-      results : []
-    };
-    result.body.hits.hits.forEach((hit,index) => {
-      const newSource = Object.assign({},hit._source);
-      delete newSource.userId;
-      response.results.push(newSource);
-    });
-    res.status(201);
-    res.json(response);
-    res.end();
-    res.status(201);
-    res.json(result.body.hits.hits);
-    res.end();
-    console.log(`you've got ${result.body.hits.hits.length} matches`);
+
+    return elasticResToFront(req,res);
   } catch (error) {
     console.log(error);
   }

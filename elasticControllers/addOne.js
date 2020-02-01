@@ -17,7 +17,6 @@ const addOne = async (toInsert) => {
       }
     });
     const numberOfRecords = result.body.hits.total.value;
-    // console.log(result.body.hits);
     console.log(toInsert);
 
     if (!numberOfRecords) {

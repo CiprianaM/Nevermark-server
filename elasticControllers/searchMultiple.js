@@ -12,23 +12,45 @@ const retrieveMultiple = async (req,res) => {
     res.searchResults = await client.search({
       index : 'history',
       track_scores : true,
-
       body : {
-        size : NBRES_PER_FETCH,
-        from : pageNum * NBRES_PER_FETCH,
+        size: NBRES_PER_FETCH,
+        from: pageNum * NBRES_PER_FETCH,
         query : {
-          multi_match : {
-            query : req.params.search,
-            fields : [ 'pageTitle^3','pageText','url' ]
-          }
+          bool: {
+            should: {
+              should: {
+
+                fuzzy: {
+                  pageTitle : {
+                    value: req.params.search,
+                    fuzziness: 'AUTO'
+                  }
+                },
+              },
+              multi_match : {
+                query : req.params.search,
+                fields : [ 'pageTitle^3','pageText'],
+                type: 'bool_prefix',
+                fields: [
+                  'pageTitle',
+                  'pageTitle._2gram',
+                  'pageTitle._3gram',
+                  'pageText',
+                  'pageText._2gram',
+                  'pageText._3gram'
+                ]
+              },
+
+            },
+          },
         },
         sort : {
+          _score : {order : 'desc'},
           'log.visitStartTime' : {order : 'desc'},
-          _score : {order : 'desc'}
         }
-
       }
     });
+
 
     return elasticResToFront(req,res);
   } catch (error) {

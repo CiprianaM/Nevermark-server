@@ -13,7 +13,7 @@ const textExtract = (str,keywordsStr,maxlen = 100,tag) =>{
   let start = strLow.indexOf(keywordsStrTolow);
   let end = keywordsStr.length;
   if (start > -1) {
-      return `${str.substring(0,start)}<${tag}>${str.substr(start,end)}</${tag}>${str.substring(start + maxlen - start, end)}`;
+      return `${str.substring(0,start)}<${tag}>${str.substr(start,end)}</${tag}>${str.substring(0+start+end, str.length)}`;
   }
    else {
       return str;

@@ -1,5 +1,6 @@
 const moment = require('moment');
 const textExtract = require('./textExtract');
+const textExtractTitle = require('./textExtractTitle');
 
 const elasticResToFront = (req,res) => {
   const searchResults = res.searchResults;
@@ -18,7 +19,7 @@ const elasticResToFront = (req,res) => {
     newSource.shortUrl = newSource.url.length < 40 ? newSource.url : newSource.url.substr(0,40) + '...';
     newSource.lastVisitTime = moment(newSource.log[newSource.log.length - 1].visitStartTime).fromNow();
     newSource.pageText = textExtract(newSource.pageText,req.params.search,100,'strong');
-    newSource.pageTitle = textExtract(newSource.pageTitle,req.params.search,100,'strong');
+    newSource.pageTitle = textExtractTitle(newSource.pageTitle,req.params.search,500,'strong');
     newSource.domain = newSource.url
       .split('/')[0]
       .split('?')[0];

@@ -17,9 +17,9 @@ const retrieveMultiple = async (req,res) => {
         from: pageNum * NBRES_PER_FETCH,
         query : {
           multi_match : {
+            type: 'best_fields',
             query : req.params.search,
             fields : [ 'pageTitle^3','pageText'],
-            type: 'bool_prefix',
             fields: [
               'pageTitle',
               'pageTitle._2gram',
@@ -28,7 +28,9 @@ const retrieveMultiple = async (req,res) => {
               'pageText._2gram',
               'pageText._3gram'
             ],
-          }},
+            fuzziness: '2'
+          },
+      },
           sort : {
             _score : {order : 'desc'},
             'log.visitStartTime' : {order : 'desc'},

@@ -9,9 +9,7 @@ const retrieveAll = async (req,res) => {
   try {
     res.searchResults = await client.search(buildQuery(matchAllQuery(),req));
     return elasticResToFront(req,res);
-
   } catch (error) {
-    console.log('error : ',error);
     throw new Error(error);
   }
 };

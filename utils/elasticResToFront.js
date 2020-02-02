@@ -5,7 +5,7 @@ const textExtractTitle = require('./textExtractTitle');
 const elasticResToFront = (req,res) => {
   const searchResults = res.searchResults;
   const nbHits = searchResults.body.hits.total.value;
-  const nbPages = Math.ceil(searchResults.body.hits.total / 20);
+  const nbPages = Math.ceil(nbHits / 20);
 
   const response = {
     nbPages,
@@ -33,7 +33,7 @@ const elasticResToFront = (req,res) => {
     .status(200)
     .json(response);
 
-  console.log(`you've got ${searchResults.body.hits.total.value} matches`);
+  console.log(`${nbHits} matches`);
 };
 
 module.exports = elasticResToFront;

@@ -47,7 +47,7 @@ router.get(
   passport.authenticate('google'),
   (req,res) => {
     console.log('user successfully connected');
-    res.redirect(`${CLIENT_URL}/`);
+    res.redirect(`${CLIENT_URL}/search`);
   },
 );
 router.get('/auth/logout',(req,res) => {
@@ -67,10 +67,10 @@ router.get('/me',isUserAuthenticated,(req,res) => {
     });
 });
 
-router.get('/nosearch',getAll);
-router.get('/nosearch/:pageNum',getAll);
-router.get('/search/:search',getAll);
-router.get('/search/:search/:pageNum',getAll);
+router.get('/nosearch',isUserAuthenticated,getAll);
+router.get('/nosearch/:pageNum',isUserAuthenticated,getAll);
+router.get('/search/:search',isUserAuthenticated,getAll);
+router.get('/search/:search/:pageNum',isUserAuthenticated,getAll);
 router.post('/',isUserAuthenticated,actions.insertUserVisit);
 const deletebyQuery = require('./elasticControllers/deleteByQuery');
 const deleteDomain = require('./elasticControllers/deleteDomain');
@@ -78,8 +78,6 @@ const deleteDomain = require('./elasticControllers/deleteDomain');
 // const sorted = require('./elasticControllers/sort');
 // const filtered = require('./elasticControllers/dateFilter');
 
-router.get('',getAll);
-router.get('/:search',getAll);
 router.post('',actions.insertUserVisit);
 router.delete('/domain',deleteDomain);
 router.delete('',deletebyQuery);

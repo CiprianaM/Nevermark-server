@@ -11,7 +11,7 @@ const retrieveMultiple = async (req,res) => {
     res.searchResults = await client.search(buildQuery(matchFuzzy(req),req));
     return elasticResToFront(req,res);
   } catch (error) {
-    console.log(error);
+    throw new Error(error);
   }
 };
 module.exports = retrieveMultiple;

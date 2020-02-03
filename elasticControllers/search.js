@@ -3,9 +3,6 @@ const searchAll = require('./searchAll');
 const textSearch = require('./searchMultiple');
 
 const filterSearchReq = async (req,res) => {
-  res.set({
-    'Access-Control-Allow-Origin' : '*'
-  });
 
   var ret;
   try {
@@ -18,7 +15,6 @@ const filterSearchReq = async (req,res) => {
     res.status(200)
       .json(ret);
   } catch (error) {
-    console.log(error);
     res.status(500)
       .json({error : true});
   }

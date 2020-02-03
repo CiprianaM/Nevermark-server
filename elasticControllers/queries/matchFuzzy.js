@@ -1,7 +1,7 @@
 const matchFuzzy = (req) => {
 
   const query = {body: {}};
-    query.body.query = {
+  query.body.query = {
     multi_match : {
       type: 'best_fields',
       query : req.params.search,
@@ -16,7 +16,7 @@ const matchFuzzy = (req) => {
       ],
       fuzziness: '2'
     },
-  }
+  };
   return query;
 }
 

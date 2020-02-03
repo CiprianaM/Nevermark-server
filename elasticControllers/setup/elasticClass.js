@@ -17,6 +17,7 @@ class ElasticClient {
         index: index + "-reindexed"
       }
     };
+    console.log(reindexParams);
     try {
       await axios.post(this.host + "/_reindex", reindexParams);
       this.log("Success!");
@@ -25,16 +26,27 @@ class ElasticClient {
       throw error;
     }
   }
-  async putMappings(index, field, type) {
-    const properties = {
-      field: field,
-      type: type
+  async putMappings(index, field) {
+    let properties = {
+      [field]: {
+        type: 'text',
+        fields: {
+          keyword: {
+            type: 'keyword',
+            ignore_above: 256
+          }
+        }
+      },
     }
+        console.log(properties);
     const newMappings = {
       properties: properties
     }
+    console.log(newMappings)
     try {
-      await axios.put(`${this.host}/${index}/_mappings`, newMappings);
+      console.log(`${this.host}/${index}/_mapping`);
+      // await axios.put(`${this.host}/${index}/_mappings`, newMappings);
+      await axios.put(`${this.host}/${index}/_mapping`, newMappings);
       this.log("Success!");
     } catch (error) {
       this.log(error)
@@ -45,14 +57,26 @@ class ElasticClient {
   search(actualRealElasticSearchClient,...args) {
     return actualRealElasticSearchClient.search(...args);
   }
-  delete(actualRealElasticSearchClient,...args) {
-    return actualRealElasticSearchClient.indices.delete(...args);
+  async delete(index) {
+    try {
+      await axios.delete(`${this.host}/${index}`);
+      this.log("Success!")
+    } catch (error) {
+      this.log(error)
+      throw error;
+    }
   }
   exists(actualRealElasticSearchClient,...args) {
     return actualRealElasticSearchClient.indices.exists(...args);
   }
-  create(actualRealElasticSearchClient,...args) {
-    return actualRealElasticSearchClient.indices.create(...args);
+  async create(index) {
+    try {
+      await axios.put(`${this.host}/${index}`);
+      this.log("Success!");
+    } catch (error) {
+      this.log(error)
+      throw error;
+    }
   }
   indices(actualRealElasticSearchClient,...args) {
     return actualRealElasticSearchClient.cat.indices(...args)

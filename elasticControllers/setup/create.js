@@ -1,12 +1,11 @@
 'use strict';
 const ElasticClient = require('./elasticClass');
-const actualElasticClient = require('../../elasticDb');
 const options = {
   host: "http://localhost:9200",
   debug: true
 }
-const index = 'exampleindex';
+const index = 'history-reindexed';
 const client = new ElasticClient(options);
 (async () => {
-  await client.create(actualElasticClient, index)
+  await client.create(index)
 })()

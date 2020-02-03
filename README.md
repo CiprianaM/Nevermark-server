@@ -42,7 +42,10 @@ For this, follow the instructions here: https://www.elastic.co/guide/en/elastics
 We will be using MongoDB Replica Set, so we will need to run the following 2 commands:
 npm i -g run-rs
 run-rs
+
 ```
+## IMPORTANT
+Run 'run-rs' every time you start the project again, otherwise it is possible that mongoose will throw errors if the replica set is not on.
 
 ## Get it started
 In the root project folder *Nevermark-client*:

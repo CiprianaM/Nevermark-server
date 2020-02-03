@@ -126,6 +126,7 @@ exports.insertUserVisit = async (req,res) => {
       userId,
       url,
       fullUrl,
+      domain,
       log : [{
         visitStartTime,
         visitTimeSpent

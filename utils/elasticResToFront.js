@@ -1,11 +1,14 @@
 const moment = require('moment');
 const textExtract = require('./textExtract');
 const textExtractTitle = require('./textExtractTitle');
+require('dotenv').config({ path : '../.env.dev' });
 
 const elasticResToFront = (req,res) => {
   const searchResults = res.searchResults;
   const nbHits = searchResults.body.hits.total.value;
-  const nbPages = Math.ceil(searchResults.body.hits.total / 20);
+  const {NBRES_PER_FETCH} = process.env || 20;
+  console.log('NBRES_PER_FETCH',NBRES_PER_FETCH);
+  const nbPages = Math.ceil(nbHits / NBRES_PER_FETCH);
 
   const response = {
     nbPages,
@@ -33,7 +36,7 @@ const elasticResToFront = (req,res) => {
     .status(200)
     .json(response);
 
-  console.log(`you've got ${searchResults.body.hits.total.value} matches`);
+  console.log(`${nbHits} matches`);
 };
 
 module.exports = elasticResToFront;

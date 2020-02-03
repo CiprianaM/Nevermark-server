@@ -21,6 +21,7 @@ const buildQuery = (query,req) => {
   };
 
   if (typeof query === 'object') {
+    console.log(Object.assign(defaultQuery,query));
     return Object.assign(defaultQuery,query);
   }
 };

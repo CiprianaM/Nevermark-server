@@ -2,7 +2,7 @@ require('dotenv').config({ path : '../.env.dev' });
 
 const buildQuery = (query,req) => {
   let pageNum = 0;
-  if (req.body.pageNum !== undefined) pageNum = req.body.pageNum - 1;
+  if (req.params.pageNum !== undefined) pageNum = req.params.pageNum - 1;
 
   const {NBRES_PER_FETCH} = process.env || 20;
   const defaultQuery = {

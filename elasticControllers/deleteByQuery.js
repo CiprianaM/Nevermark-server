@@ -4,7 +4,7 @@ const esClient = require('../elasticDb');
 
 const deletion = async(req,res) => {
   try {
-    const deleteSelected = await esClient.deleteByQuery({
+    await esClient.deleteByQuery({
       index: 'history',
       body: {
         query: {
@@ -18,6 +18,7 @@ const deletion = async(req,res) => {
       }
     });
     res.status(204);
+    res.end();
   } catch (error) {
     console.log(error);
   }

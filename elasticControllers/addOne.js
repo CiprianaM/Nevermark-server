@@ -1,10 +1,10 @@
 const esClient = require('../elasticDb');
 
-const addOne = async (toInsert) => {
+const addOne = async (toInsert,index = 'history') => {
 
   try {
     const result = await esClient.search({
-      index : 'history',
+      index,
       body : {
         query : {
           bool : {
@@ -22,7 +22,7 @@ const addOne = async (toInsert) => {
     if (!numberOfRecords) {
 
       const inserted = await esClient.index({
-        index : 'history',
+        index,
         body : {
           pageTitle : toInsert.pageTitle,
           pageText : toInsert.pageText,
@@ -51,7 +51,7 @@ const addOne = async (toInsert) => {
       console.log(returnedResult._source.log);
 
       const updated = await esClient.update({
-        index : 'history',
+        index,
         id : result.body.hits.hits[0]._id,
         body : {
 

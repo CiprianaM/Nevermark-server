@@ -48,7 +48,7 @@ run-rs
 Run 'run-rs' every time you start the project again, otherwise it is possible that mongoose will throw errors if the replica set is not on.
 
 ## Get it started
-In the root project folder *Nevermark-client*:
+In the root project folder *Nevermark-server*:
 
 1. Create a .env.dev file with this content (or the config or your likings) :
 ```

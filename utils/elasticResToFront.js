@@ -9,10 +9,12 @@ const elasticResToFront = (req,res) => {
     const nbHits = searchResults.body.hits.total.value;
     const {NBRES_PER_FETCH} = process.env || 20;
     const nbPages = Math.ceil(nbHits / NBRES_PER_FETCH);
+    const took = res.searchResults.body.took;
 
     const response = {
       nbPages,
       nbHits,
+      took,
       results : []
     };
     searchResults.body.hits.hits.forEach((hit) => {

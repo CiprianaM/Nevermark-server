@@ -6,7 +6,7 @@ const buildQuery = (query,req) => {
 
   const {NBRES_PER_FETCH} = process.env || 20;
   const defaultQuery = {
-    index : 'history',
+    index : process.env.ELASTIC_INDEX,
     track_scores : true,
     body : {
       size : NBRES_PER_FETCH,

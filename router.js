@@ -67,18 +67,17 @@ router.get('/me',isUserAuthenticated,(req,res) => {
     });
 });
 
-router.get('/nosearch',isUserAuthenticated,getAll);
-router.get('/nosearch/:pageNum',isUserAuthenticated,getAll);
-router.get('/search/:search',isUserAuthenticated,getAll);
-router.get('/search/:search/:pageNum',isUserAuthenticated,getAll);
-router.post('/',isUserAuthenticated,actions.insertUserVisit);
+router.get('/nosearch',getAll);
+router.get('/nosearch/:pageNum',getAll);
+router.get('/search/:search',getAll);
+router.get('/search/:search/:pageNum',getAll);
+router.post('/',actions.insertUserVisit);
 const deletebyQuery = require('./elasticControllers/deleteByQuery');
 const deleteDomain = require('./elasticControllers/deleteDomain');
 
 // const sorted = require('./elasticControllers/sort');
 // const filtered = require('./elasticControllers/dateFilter');
 
-router.post('',actions.insertUserVisit);
 router.delete('/domain',deleteDomain);
 router.delete('',deletebyQuery);
 // router.get('/sorted/:order', filtered);

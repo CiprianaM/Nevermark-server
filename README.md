@@ -52,7 +52,7 @@ In the root project folder *Nevermark-server*:
 
 1. Create a .env.dev file with this content (or the config or your likings) :
 ```
-APP_PORT=3004
+APP_PORT=3005
 A file called env.example has been commited to help you structure the needed .env file.
 ```
 

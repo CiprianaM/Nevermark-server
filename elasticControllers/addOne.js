@@ -28,6 +28,7 @@ const addOne = async (toInsert,index = 'history') => {
           pageText : toInsert.pageText,
           userId : toInsert.userId,
           url : toInsert.url,
+          urlId : toInsert.urlId,
           domain : toInsert.domain,
           log : toInsert.log,
           totalVisits : 1,

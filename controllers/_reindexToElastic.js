@@ -51,6 +51,7 @@ const reindex = async (req,res) => {
       }
 
       const toIndex = {
+        urlId,
         pageTitle,
         pageText,
         userId,

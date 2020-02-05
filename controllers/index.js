@@ -125,6 +125,7 @@ exports.insertUserVisit = async (req,res) => {
       pageTitle,
       pageText,
       userId,
+      urlId,
       url,
       fullUrl,
       domain,

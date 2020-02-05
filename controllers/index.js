@@ -22,6 +22,10 @@ exports.insertUserVisit = async (req,res) => {
     if (!req.body) {
       throw Error('Missing request body');
     }
+    if (req.body.stop) {
+      res.json('i have stopped posting')
+      return;
+    }
 
     const checkRules = [
       {prop : 'pageTitle',type : 'string',required : true},

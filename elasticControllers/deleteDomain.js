@@ -3,7 +3,7 @@ const esClient = require('../elasticDb');
 
 const deleteDomain = async (req,res) => {
   console.log('delete domain called');
-  console.log(req.body);
+  console.log(req.body, 'this is req.body');
   try {
     const response = await esClient.deleteByQuery({
       index : 'history-reindexed',
@@ -11,7 +11,7 @@ const deleteDomain = async (req,res) => {
         query : {
           bool : {
             must : [
-              { term : { 'userId.keyword' : { value : req.body.userId } } },
+              // { term : { 'userId.keyword' : { value : req.body.userId } } },
               { wildcard : { 'domain' : { value : req.body.domain } } }
             ],
           }

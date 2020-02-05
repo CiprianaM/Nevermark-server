@@ -1,3 +1,4 @@
+require('dotenv').config({ path : '../.env.dev' });
 const theDb = require('../models');
 const mongoose = require('mongoose');
 const checkObjProps = require('../utils/checkObjProps');
@@ -8,8 +9,8 @@ exports.insertUserVisit = async (req,res) => {
 
   // Mock req for postman
   // {
-  //   "fullTitle" : "Elasticsearch queries",
-  //   "text" : "This is how you make an elasticsearch query. It is not easy, but we will manage.",
+  //   "pageTitle" : "Elasticsearch queries",
+  //   "pageText" : "This is how you make an elasticsearch query. It is not easy, but we will manage.",
   //   "userId" : "45",
   //   "fullUrl" : "http://www.stackoverflow.com/http://hello",
   //   "visitTimeSpent" : "8888",
@@ -24,7 +25,7 @@ exports.insertUserVisit = async (req,res) => {
 
     const checkRules = [
       {prop : 'pageTitle',type : 'string',required : true},
-      {prop : 'pageText',type : 'string',required : true},
+      {prop : 'pageText',type : 'string'},
       {prop : 'userId',type : 'integer',required : true},
       {prop : 'fullUrl',type : 'string',required : true},
       {prop : 'visitTimeSpent',type : 'integer',required : true},
@@ -39,7 +40,7 @@ exports.insertUserVisit = async (req,res) => {
     }
 
   } catch (e) {
-    console.log('error thrown');
+    console.log('error thrown :' + e.message);
     // Bad request from the client
     res.status(400).send(e.message);
     return;
@@ -134,11 +135,12 @@ exports.insertUserVisit = async (req,res) => {
       visitTimeSpent,
       protocol
     };
-
-    const indexed = await indexToElasticSearch(toIndex);
+    if (!req.body.dontIndexToElastic) {
+      const indexed = await indexToElasticSearch(toIndex,process.env.ELASTIC_INDEX);
+      res.status(201).send(indexed);
+    }
     console.log('Mission is a success');
 
-    res.status(201).send(indexed);
     // TODO : ElasticSearch Index From here
     await session.commitTransaction();
   } catch (error) {

@@ -1,5 +1,6 @@
 // const mongoose = require('mongoose');
 require('dotenv').config({ path : '../.env.dev' });
+
 // const db = require('../db');
 const theDb = require('../models');
 // const checkObjProps = require('../utils/checkObjProps');
@@ -8,10 +9,9 @@ const indexToElasticSearch = require('../elasticControllers/addOne');
 
 const reindex = async (req,res) => {
 
-  theDb.url2User.find().count(function (err,count) {
+  await theDb.url2User.find().count(function (err,count) {
     console.log('Number of docs: ',count);
   });
-  return;
 
   // Mock req for postman
   // {

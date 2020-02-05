@@ -24,7 +24,7 @@ exports.insertUserVisit = async (req,res) => {
 
     const checkRules = [
       {prop : 'pageTitle',type : 'string',required : true},
-      {prop : 'pageText',type : 'string',required : true},
+      {prop : 'pageText',type : 'string'},
       {prop : 'userId',type : 'integer',required : true},
       {prop : 'fullUrl',type : 'string',required : true},
       {prop : 'visitTimeSpent',type : 'integer',required : true},

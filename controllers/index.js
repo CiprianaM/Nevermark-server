@@ -134,8 +134,9 @@ exports.insertUserVisit = async (req,res) => {
       visitTimeSpent,
       protocol
     };
-
-    const indexed = await indexToElasticSearch(toIndex);
+    if (!req.body.dontIndexToElastic) {
+      const indexed = await indexToElasticSearch(toIndex);
+    }
     console.log('Mission is a success');
 
     res.status(201).send(indexed);
